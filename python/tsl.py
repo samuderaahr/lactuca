@@ -1,6 +1,11 @@
-from tsl2561 import TSL2561
+import board
+import busio
+import adafruit_tsl2561
+i2c = busio.I2C(board.SCL, board.SDA)
+sensor = adafruit_tsl2561.TSL2561(i2c)
 
-
-if __name__ == "__main__":
-  tsl = TSL2561(debug=True)
-  print(tsl.lux())
+print('{')
+print('"Lux": {:.2f},'.format(sensor.lux))
+print('"Vis": {},'.format(sensor.broadband))
+print('"IR": {}'.format(sensor.infrared))
+print('}')
