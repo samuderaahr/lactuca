@@ -1,22 +1,28 @@
 import board
 import math
+import json
+import time
 
 from adafruit_bme280 import basic as adafruit_bme280
 i2c = board.I2C()
-bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
+bme = adafruit_bme280.Adafruit_BME280_I2C(i2c)
 
-bme280.sea_level_pressure = 1010.1
+bme.sea_level_pressure = 1006
 
 b = 17.62
 c = 243.12
-gamma = (b * bme280.temperature /(c + bme280.temperature))
-gammaN = gamma + math.log(bme280.humidity / 100.0)
+gamma = (b * bme.temperature /(c + bme.temperature))
+gammaN = gamma + math.log(bme.humidity / 100.0)
 dewpoint = (c * gammaN) / (b - gammaN)
 
-print('{')
-print('"Tmp": %0.1f,' % bme280.temperature)
-print('"Hum": %0.1f,' % bme280.humidity)
-print('"Prs": %0.1f,' % bme280.pressure)
-print('"Alt": %0.2f,' % bme280.altitude)
-print('"DwP": %0.2f' % dewpoint)
-print('}')
+output ={
+  "ts" : int(time.time()),
+  "tmp": round(bme.temperature, 2),
+  "hum": round(bme.humidity, 2),
+  "prs": round(bme.pressure, 2),
+  "alt": round(bme.altitude, 2),
+  "dwp": round(dewpoint, 2)
+}
+
+outjson = json.dumps(output)
+print(outjson)

@@ -1,11 +1,18 @@
 import board
 import busio
 import adafruit_tsl2561
-i2c = busio.I2C(board.SCL, board.SDA)
-sensor = adafruit_tsl2561.TSL2561(i2c)
+import json
+import time
 
-print('{')
-print('"Lux": {:.2f},'.format(sensor.lux))
-print('"Vis": {},'.format(sensor.broadband))
-print('"IR": {}'.format(sensor.infrared))
-print('}')
+i2c = busio.I2C(board.SCL, board.SDA)
+tsl = adafruit_tsl2561.TSL2561(i2c)
+
+output ={
+  "ts": int(time.time()),
+  "lux": round(tsl.lux, 2),
+  "vis": round(tsl.broadband, 2),
+  "IRd": round(tsl.infrared, 2)
+}
+
+outjson = json.dumps(output)
+print(outjson)
